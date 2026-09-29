@@ -1,26 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/*
+  Kiddistan Admin theme tokens.
+  @theme creates Tailwind utilities such as:
+  bg-primary, text-primary, bg-card, border-border,
+  text-muted-foreground, bg-sidebar, shadow-soft, font-sans.
+*/
+@theme {
+  --color-primary: rgb(0 95 184);
+  --color-primary-foreground: rgb(255 255 255);
+
+  --color-secondary: rgb(232 241 251);
+  --color-secondary-foreground: rgb(0 66 128);
+
+  --color-background: rgb(240 242 245);
+  --color-foreground: rgb(27 32 40);
+
+  --color-muted: rgb(245 246 248);
+  --color-muted-foreground: rgb(96 104 116);
+
+  --color-card: rgb(255 255 255);
+  --color-border: rgb(216 220 226);
+
+  --color-accent: rgb(222 110 32);
+  --color-destructive: rgb(196 43 28);
+
+  --color-success: rgb(16 124 65);
+  --color-warning: rgb(176 106 0);
+  --color-info: rgb(0 120 170);
+
+  --color-sidebar: rgb(25 33 45);
+  --color-sidebar-foreground: rgb(168 178 192);
+
+  --font-sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-display: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --radius-sm: 3px;
+
+  --shadow-soft: 0 1px 2px rgb(27 32 40 / 0.06);
+  --shadow-panel: 0 1px 3px rgb(27 32 40 / 0.08);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    min-height: 100%;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    min-height: 100vh;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-size: 13.5px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *,
+  ::before,
+  ::after {
+    border-color: var(--color-border);
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background-color: color-mix(
+      in srgb,
+      var(--color-primary) 20%,
+      transparent
+    );
+    color: var(--color-foreground);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .card-surface {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-card);
+  }
+}
+
+/* Slim admin scrollbars */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border: 2px solid var(--color-background);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted-foreground);
+}
+
+/* Recharts defaults — used after live charts are added. */
+.recharts-cartesian-axis-tick-value {
+  fill: var(--color-muted-foreground);
+  font-size: 11px;
+}
+
+.recharts-cartesian-grid line {
+  stroke: var(--color-border);
+}
+
+.recharts-default-legend {
+  font-size: 12px;
+}
+
+.recharts-surface:focus,
+.recharts-wrapper:focus,
+.recharts-sector:focus {
+  outline: none;
 }
