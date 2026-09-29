@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
@@ -20,6 +20,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginPageFallback />}>
+      <LoginPageContent />
+    </Suspense>
+  );
+}
+
+function LoginPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -125,9 +133,11 @@ export default function LoginPage() {
             <div className="mt-8 grid max-w-md grid-cols-2 gap-3">
               <div className="rounded-sm border border-white/10 bg-white/[0.07] p-4 backdrop-blur-sm">
                 <PackageIcon />
+
                 <p className="mt-3 text-sm font-semibold text-white">
                   Product control
                 </p>
+
                 <p className="mt-1 text-xs leading-5 text-white/60">
                   Catalog, photos, sizes, stock, and pricing.
                 </p>
@@ -135,9 +145,11 @@ export default function LoginPage() {
 
               <div className="rounded-sm border border-white/10 bg-white/[0.07] p-4 backdrop-blur-sm">
                 <Sparkles className="h-5 w-5 text-amber-300" />
+
                 <p className="mt-3 text-sm font-semibold text-white">
                   Store insights
                 </p>
+
                 <p className="mt-1 text-xs leading-5 text-white/60">
                   Orders, customer activity, and analytics.
                 </p>
@@ -210,7 +222,10 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6 sm:px-7 sm:py-7">
+              <form
+                onSubmit={handleSubmit}
+                className="space-y-5 px-6 py-6 sm:px-7 sm:py-7"
+              >
                 <div className="space-y-2">
                   <Label htmlFor="email">Email address</Label>
 
@@ -308,6 +323,18 @@ export default function LoginPage() {
             </p>
           </div>
         </section>
+      </div>
+    </main>
+  );
+}
+
+function LoginPageFallback() {
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-slate-50 px-5">
+      <div className="card-surface w-full max-w-md border border-border/80 p-7 text-center shadow-panel">
+        <p className="text-sm text-muted-foreground">
+          Loading secure sign-in…
+        </p>
       </div>
     </main>
   );
