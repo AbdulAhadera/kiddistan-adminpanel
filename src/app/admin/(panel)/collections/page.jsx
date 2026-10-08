@@ -1,3 +1,4 @@
+// src/app/admin/(panel)/collections/page.jsx
 import Link from "next/link";
 import {
   ChevronDown,
@@ -7,13 +8,16 @@ import {
   Plus,
 } from "lucide-react";
 
+
 import { createClient } from "@/lib/supabase/server";
 import { PageHeader } from "@/components/page-header";
 import { StatusBadge } from "@/components/status-badge";
 import { formatDateTime, formatPKR } from "@/lib/utils";
-import { createCollection } from "./actions";
+import { CreateCollectionForm } from "./create-collection-form";
+
 
 export const dynamic = "force-dynamic";
+
 
 function getTotalStock(product) {
   return (product.product_sizes || []).reduce(
@@ -22,8 +26,10 @@ function getTotalStock(product) {
   );
 }
 
+
 export default async function CollectionsPage() {
   const supabase = await createClient();
+
 
   const { data: collections, error } = await supabase
     .from("collections")
@@ -58,15 +64,19 @@ export default async function CollectionsPage() {
     )
     .order("created_at", { ascending: false });
 
+
   const collectionList = collections || [];
+
 
   const totalProducts = collectionList.reduce((total, collection) => {
     return total + Number(collection.product_collections?.length || 0);
   }, 0);
 
+
   const activeCollections = collectionList.filter(
     (collection) => collection.is_active
   ).length;
+
 
   return (
     <>
@@ -79,6 +89,7 @@ export default async function CollectionsPage() {
         ]}
       />
 
+
       {error ? (
         <div
           role="alert"
@@ -88,31 +99,37 @@ export default async function CollectionsPage() {
         </div>
       ) : null}
 
+
       <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
         <div className="card-surface px-4 py-3 shadow-soft">
           <p className="text-xs font-medium text-muted-foreground">
             Total collections
           </p>
 
+
           <p className="mt-1 text-xl font-semibold tabular-nums text-foreground">
             {collectionList.length}
           </p>
         </div>
+
 
         <div className="card-surface px-4 py-3 shadow-soft">
           <p className="text-xs font-medium text-muted-foreground">
             Active collections
           </p>
 
+
           <p className="mt-1 text-xl font-semibold tabular-nums text-success">
             {activeCollections}
           </p>
         </div>
 
+
         <div className="card-surface px-4 py-3 shadow-soft">
           <p className="text-xs font-medium text-muted-foreground">
             Product assignments
           </p>
+
 
           <p className="mt-1 text-xl font-semibold tabular-nums text-primary">
             {totalProducts}
@@ -120,91 +137,9 @@ export default async function CollectionsPage() {
         </div>
       </div>
 
-      <details className="card-surface group mb-4 overflow-hidden shadow-soft">
-        <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 sm:px-6">
-          <div className="flex min-w-0 items-center gap-3">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-sm bg-primary/10 text-primary">
-              <Plus className="h-4 w-4" />
-            </span>
 
-            <div className="min-w-0">
-              <h2 className="font-semibold text-foreground">
-                Create collection
-              </h2>
+      <CreateCollectionForm />
 
-              <p className="mt-0.5 truncate text-sm text-muted-foreground">
-                Create a group, then assign it to products from the product form.
-              </p>
-            </div>
-          </div>
-
-          <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
-        </summary>
-
-        <form
-          action={createCollection}
-          className="border-t border-border px-5 py-5 sm:px-6"
-        >
-          <div className="grid grid-cols-1 gap-4">
-            <div className="space-y-2">
-              <label
-                htmlFor="name"
-                className="text-sm font-medium text-foreground"
-              >
-                Collection name *
-              </label>
-
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                maxLength={100}
-                placeholder="Example: Summer Sale"
-                className="flex h-10 w-full rounded-sm border border-input bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label
-                htmlFor="description"
-                className="text-sm font-medium text-foreground"
-              >
-                Description
-              </label>
-
-              <textarea
-                id="description"
-                name="description"
-                rows={3}
-                placeholder="Optional short description for this collection."
-                className="flex w-full resize-y rounded-sm border border-input bg-background px-3 py-2 text-sm text-foreground outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30"
-              />
-            </div>
-          </div>
-
-          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
-            <label className="inline-flex cursor-pointer items-center gap-2 text-sm text-foreground">
-              <input
-                name="isActive"
-                type="checkbox"
-                defaultChecked
-                className="h-4 w-4 rounded border-border accent-primary"
-              />
-
-              Make collection active
-            </label>
-
-            <button
-              type="submit"
-              className="inline-flex h-10 items-center gap-2 rounded-sm bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              <Plus className="h-4 w-4" />
-              Create collection
-            </button>
-          </div>
-        </form>
-      </details>
 
       <section className="card-surface overflow-hidden shadow-soft">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-5 py-4 sm:px-6">
@@ -213,15 +148,18 @@ export default async function CollectionsPage() {
               All collections
             </h2>
 
+
             <p className="mt-1 text-sm text-muted-foreground">
               Click a collection to view all assigned products.
             </p>
           </div>
 
+
           <span className="rounded-sm bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
             {collectionList.length} total
           </span>
         </div>
+
 
         {collectionList.length ? (
           <div className="divide-y divide-border">
@@ -229,6 +167,7 @@ export default async function CollectionsPage() {
               const articles = (collection.product_collections || [])
                 .map((item) => item.products)
                 .filter(Boolean);
+
 
               return (
                 <details key={collection.id} className="group">
@@ -238,11 +177,13 @@ export default async function CollectionsPage() {
                         <Layers className="h-5 w-5" />
                       </span>
 
+
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="truncate font-semibold text-foreground">
                             {collection.name}
                           </p>
+
 
                           <span
                             className={
@@ -255,22 +196,28 @@ export default async function CollectionsPage() {
                           </span>
                         </div>
 
+
                         <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
                           <span className="font-mono">/{collection.slug}</span>
 
+
                           <span className="hidden h-1 w-1 rounded-full bg-muted-foreground/50 sm:block" />
+
 
                           <span>
                             {articles.length} product
                             {articles.length === 1 ? "" : "s"}
                           </span>
 
+
                           <span className="hidden h-1 w-1 rounded-full bg-muted-foreground/50 sm:block" />
+
 
                           <span className="hidden sm:inline">
                             Created {formatDateTime(collection.created_at)}
                           </span>
                         </div>
+
 
                         {collection.description ? (
                           <p className="mt-2 line-clamp-1 text-sm text-muted-foreground">
@@ -283,9 +230,11 @@ export default async function CollectionsPage() {
                         )}
                       </div>
 
+
                       <ChevronDown className="h-5 w-5 shrink-0 text-muted-foreground transition-transform duration-200 group-open:rotate-180" />
                     </div>
                   </summary>
+
 
                   <div className="border-t border-border bg-muted/[0.18] px-5 py-5 sm:px-6">
                     <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
@@ -293,10 +242,12 @@ export default async function CollectionsPage() {
                         <div className="flex items-center gap-2">
                           <Package className="h-4 w-4 text-primary" />
 
+
                           <h3 className="font-semibold text-foreground">
                             Products in {collection.name}
                           </h3>
                         </div>
+
 
                         <p className="mt-1 text-sm text-muted-foreground">
                           {articles.length
@@ -305,11 +256,13 @@ export default async function CollectionsPage() {
                         </p>
                       </div>
 
+
                       <span className="inline-flex items-center gap-1.5 rounded-sm bg-primary/10 px-2.5 py-1 text-xs font-semibold text-primary">
                         <Package className="h-3.5 w-3.5" />
                         {articles.length} total
                       </span>
                     </div>
+
 
                     {articles.length ? (
                       <div className="overflow-hidden rounded-sm border border-border bg-card">
@@ -320,8 +273,10 @@ export default async function CollectionsPage() {
                           <span className="text-right">Stock</span>
                         </div>
 
+
                         {articles.map((product) => {
                           const totalStock = getTotalStock(product);
+
 
                           return (
                             <Link
@@ -345,10 +300,12 @@ export default async function CollectionsPage() {
                                   )}
                                 </div>
 
+
                                 <div className="min-w-0">
                                   <p className="truncate text-sm font-medium text-foreground">
                                     {product.name}
                                   </p>
+
 
                                   <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                                     {product.categories?.name ? (
@@ -358,6 +315,7 @@ export default async function CollectionsPage() {
                                       </span>
                                     ) : null}
 
+
                                     <span className="font-mono text-[11px] text-muted-foreground">
                                       {product.sku}
                                     </span>
@@ -365,9 +323,11 @@ export default async function CollectionsPage() {
                                 </div>
                               </div>
 
+
                               <span className="hidden text-sm font-medium tabular-nums text-foreground sm:block">
                                 {formatPKR(Number(product.price || 0))}
                               </span>
+
 
                               <span className="hidden sm:block">
                                 <StatusBadge
@@ -375,6 +335,7 @@ export default async function CollectionsPage() {
                                   kind="product"
                                 />
                               </span>
+
 
                               <span
                                 className={
@@ -395,9 +356,11 @@ export default async function CollectionsPage() {
                           <Package className="h-5 w-5" />
                         </span>
 
+
                         <p className="mt-3 text-sm font-medium text-foreground">
                           No products assigned
                         </p>
+
 
                         <p className="mt-1 text-sm text-muted-foreground">
                           Edit a product and select this collection to add it.
@@ -415,9 +378,11 @@ export default async function CollectionsPage() {
               <Layers className="h-5 w-5" />
             </div>
 
+
             <h2 className="mt-4 font-semibold text-foreground">
               No collections yet
             </h2>
+
 
             <p className="mt-1 max-w-sm text-sm text-muted-foreground">
               Create a collection above, then assign it to products from the
