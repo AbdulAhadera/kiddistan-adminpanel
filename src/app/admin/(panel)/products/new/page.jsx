@@ -22,7 +22,7 @@ export default async function NewProductPage() {
 
       supabase
         .from("collections")
-        .select("id, name, slug, is_active, start_date, end_date")
+        .select("id, name, slug, is_active")
         .eq("is_active", true)
         .order("name", { ascending: true }),
     ]);
